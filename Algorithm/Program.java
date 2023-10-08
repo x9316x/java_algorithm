@@ -8,7 +8,10 @@ public class Program {
         ArrayList<Integer> arrayList = new ArrayList<>();
         arrayList.add(12);
 
+        // Создание HashMap с начальным размером 4
         HashMap<String, String> hashMap = new HashMap<>(4);
+
+        // Добавление пар ключ-значение в HashMap
         String addResult = hashMap.put("+7900111223300", "AAAAAAA");
         addResult = hashMap.put("+7900111223301", "BBBBBBB");
         addResult = hashMap.put("+7900111223300", "DDDDDDD");
@@ -21,13 +24,19 @@ public class Program {
         addResult = hashMap.put("+7900111223308", "EEEEEEE7");
         addResult = hashMap.put("+7900111223309", "EEEEEEE8");
 
+        // Поиск значения по ключу в HashMap
         String searchResult = hashMap.get("+7900111223307");
 
-        System.out.println(hashMap);
 
-        for (HashMap.Entity entuty : hashMap) {
-            System.out.printf("%s - %s", entuty.key, entuty.value);
+        // Использование метода toString для вывода содержимого HashMap
+        System.out.println("toString(): " + hashMap);
+
+        // Использование цикла foreach для перебора элементов HashMap
+        System.out.println("foreach:");
+        for (HashMap.Entity entity : hashMap) {
+            System.out.printf("%s - %s\n", entity.key, entity.value);
         }
+
     }
 
 }

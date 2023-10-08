@@ -1,7 +1,8 @@
 package Algorithm;
 
-import javax.swing.text.html.HTMLDocument;
+
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Хэш-таблица
@@ -18,20 +19,64 @@ public class HashMap<K, V> implements Iterable<HashMap.Entity> {
 
     class HashMapIterator implements Iterator<HashMap.Entity>{
 
+        private int currentBucketIndex = -1;
+        private Bucket.Node currentNode = null;
+
         @Override
         public boolean hasNext() {
+            if (currentNode != null && currentNode.next != null) {
+                return true;
+            }
+            for (int i = currentBucketIndex + 1; i < buckets.length; i++) {
+                if (buckets[i] != null && buckets[i].head != null) {
+                    return true;
+                }
+            }
             return false;
         }
 
         @Override
         public Entity next() {
-            return null;
+            if (currentNode == null || currentNode.next == null) {
+                currentBucketIndex++;
+                while (currentBucketIndex < buckets.length && (buckets[currentBucketIndex] == null || buckets[currentBucketIndex].head == null)) {
+                    currentBucketIndex++;
+                }
+                if (currentBucketIndex < buckets.length) {
+                    currentNode = buckets[currentBucketIndex].head;
+                } else {
+                    throw new NoSuchElementException("В HashMap больше нет элементов");
+                }
+            } else {
+                currentNode = currentNode.next;
+            }
+            return currentNode.value;
         }
     }
 
     /**
-     * TODO: В минимальном варианте, распечатать все элементы хэш-таблицы
-     * @return
+     *
+     @Override
+     public String toString() {
+     StringBuilder sb = new StringBuilder();
+     sb.append("{");
+     for (Bucket bucket : buckets) {
+     if (bucket != null) {
+     Node node = bucket.head;
+     while (node != null) {
+     sb.append(node.value.key).append(": ").append(node.value.value).append(", ");
+     node = node.next;
+     }
+     }
+     }
+     if (sb.length() > 1) {
+     sb.setLength(sb.length() - 2);  // Remove trailing comma and space
+     }
+     sb.append("}");
+     return sb.toString();
+     }
+
+      * @return
      */
     @Override
     public String toString() {
@@ -180,7 +225,7 @@ public class HashMap<K, V> implements Iterable<HashMap.Entity> {
         /**
          * Указатель на первый элемент связного списка
          */
-        private Node head;
+        private Bucket.Node head;
 
         /**
          * Узел связного списка
@@ -213,7 +258,7 @@ public class HashMap<K, V> implements Iterable<HashMap.Entity> {
                 return null;
             }
 
-            Node currentNode = head;
+            Bucket.Node currentNode = head;
             while (true){
                 if (currentNode.value.key.equals(entity.key)){
                     V buf = (V)currentNode.value.value;
